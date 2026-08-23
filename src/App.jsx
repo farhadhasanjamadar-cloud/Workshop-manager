@@ -1181,7 +1181,7 @@ function LaunchScreen({ logo }) {
     <div className="app">
       <div className="launch-screen">
         <div className="launch-card">
-          {logo ? <img src={logo} alt="CYE Woodcrafts" className="launch-logo" /> : <div className="launch-mark">CYE</div>}
+          {logo ? <img src="/IMG_0278.jpeg" alt="CYE Woodcrafts" className="launch-logo" /> : <div className="launch-mark">CYE</div>}
           <div className="launch-name">CYE WOODCRAFTS</div>
           <div className="launch-tagline">Upholstery workshop management</div>
           <div className="launch-spinner" />
