@@ -111,7 +111,7 @@ function downloadCSV(filename, rows, headers) {
 // Fill these in with your Supabase project's URL and PUBLISHABLE (anon) key —
 // find them in Supabase: Project Settings -> API. Never put the service_role/secret key here.
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 const SESSION_KEY = "sb_session";
 
