@@ -1598,7 +1598,7 @@ function AppInner() {
   const [confirm, setConfirm] = useState(null); // { type, id, label }
   const [toast, setToast] = useState("");
   const [sessionUser, setSessionUser] = useState(null); // registered staff record once signed in
-  const [gateRequired, setGateRequired] = useState(false); // decided once when the app loads, not re-checked live
+  const [gateRequired, setGateRequired] = useState(true); // decided once when the app loads, not re-checked live
 
   const [data, setData] = useState({ enquiries: [], quotations: [], jobs: [], materials: [], purchases: [], finance: [], staff: [], notes: [], customers: [] });
   const [profile, setProfile] = useState({ companyName: "CYE Woodcrafts", phone: "", address: "", gst: "", logo: DEFAULT_LOGO });
