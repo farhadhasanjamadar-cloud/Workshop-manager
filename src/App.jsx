@@ -1614,7 +1614,7 @@ function AppInner() {
       const obj = {};
       KEYS.forEach((k, i) => { obj[k] = entries[i]; });
       setData(obj);
-      setGateRequired(supabaseConfigured);
+      setGateRequired(true);
 
       // If already signed in to Supabase from a previous visit, skip the gate automatically.
       if (supabaseConfigured) {
