@@ -318,18 +318,22 @@ async function setKey(key, value) {
   try {
     const json = JSON.stringify(value);
 
-    if (typeof window === "undefined" || !window.localStorage) {
-      return false;
+    if (typeof window !== "undefined" && window.localStorage) {
+      try {
+        window.localStorage.setItem(key, json);
+      } catch (storageError) {
+        console.warn("Local storage unavailable:", storageError);
+      }
     }
 
-    window.localStorage.setItem(key, json);
-
-    const check = window.localStorage.getItem(key);
-
-    return check === json;
+    // Local storage is only a backup.
+    // Do not block Supabase/cloud saving if it fails.
+    return true;
   } catch (e) {
-    console.error("Storage save failed:", e);
-    return false;
+    console.error("Storage preparation failed:", e);
+
+    // Still allow the cloud/database save to continue.
+    return true;
   }
 }
 /* ---------------------------------------------------------------- */
