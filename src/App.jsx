@@ -1734,7 +1734,32 @@ function AppInner() {
     };
   }
 
-  function saveEnquiry(v) { upsert("enquiries", modal.data ? { ...modal.data, ...v } : v); upsertCustomerRecord(v.customerName, v.phone, v.location); closeModal(); }
+  async function saveEnquiry(v) {
+  const enquiry = modal.data ? { ...modal.data, ...v } : v;
+
+  // Save locally as before
+  upsert("enquiries", enquiry);
+  upsertCustomerRecord(v.customerName, v.phone, v.location);
+
+  // Sync customer to Supabase
+  try {
+    await supabaseDbRequest("customers?on_conflict=phone", {
+      method: "POST",
+      headers: {
+        "Prefer": "resolution=merge-duplicates"
+      },
+      body: JSON.stringify({
+        name: v.customerName || "Unnamed",
+        phone: String(v.phone || "").replace(/\s+/g, ""),
+        address: v.location || null
+      })
+    });
+  } catch (e) {
+    console.error("Customer Supabase sync failed:", e);
+  }
+
+  closeModal();
+}
   function createQuotationFromEnquiry(e) {
     setModal({
       type: "quotations",
