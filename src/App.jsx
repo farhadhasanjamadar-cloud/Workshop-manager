@@ -1755,7 +1755,9 @@ function AppInner() {
       })
     });
   } catch (e) {
-    console.error("Customer Supabase sync failed:", e);
+    console.error("Customer Supabase sync failed", e);
+setToast("DATABASE ERROR: " + (e?.message || String(e)));
+setTimeout(() => setToast(""), 15000);
   }
 
   closeModal();
