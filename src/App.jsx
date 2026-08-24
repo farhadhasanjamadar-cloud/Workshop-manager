@@ -313,7 +313,13 @@ async function getKey(key, fallback) {
   } catch (e) { return fallback; }
 }
 async function setKey(key, value) {
-  try { await window.storage.set(key, JSON.stringify(value)); return true; } catch (e) { console.error("storage failed", key, e); return false; }
+  try {
+    await window.storage.set(key, JSON.stringify(value));
+    return true;
+  } catch (e) {
+    console.error("Storage save failed:", e);
+    return false;
+  }
 }
 
 /* ---------------------------------------------------------------- */
