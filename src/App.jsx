@@ -316,14 +316,22 @@ async function getKey(key, fallback) {
 }
 async function setKey(key, value) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
-    return true;
+    const json = JSON.stringify(value);
+
+    if (typeof window === "undefined" || !window.localStorage) {
+      return false;
+    }
+
+    window.localStorage.setItem(key, json);
+
+    const check = window.localStorage.getItem(key);
+
+    return check === json;
   } catch (e) {
     console.error("Storage save failed:", e);
     return false;
   }
 }
-
 /* ---------------------------------------------------------------- */
 /* Small UI primitives                                                */
 /* ---------------------------------------------------------------- */
