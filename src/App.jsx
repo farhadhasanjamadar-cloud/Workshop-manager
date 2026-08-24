@@ -139,6 +139,33 @@ async function supabaseAuthRequest(path, body) {
   }
   return json;
 }
+async function supabaseDbRequest(path, options = {}) {
+  const session = await loadStoredSession();
+
+  if (!session?.access_token) {
+    throw new Error("Not signed in to Supabase");
+  }
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${session.access_token}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+
+  const text = await res.text();
+
+  if (!res.ok) {
+    throw new Error(
+      `[DB ${res.status}] ${text || res.statusText}`
+    );
+  }
+
+  return text ? JSON.parse(text) : null;
+}
 function normalizeSession(raw) {
   const expiresAt = raw.expires_at || (Math.floor(Date.now() / 1000) + (raw.expires_in || 3600));
   return { access_token: raw.access_token, refresh_token: raw.refresh_token, expires_at: expiresAt, user: raw.user };
