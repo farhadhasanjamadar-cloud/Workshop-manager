@@ -308,13 +308,15 @@ function withTimeout(promise, ms, fallback) {
 }
 async function getKey(key, fallback) {
   try {
-    const res = await withTimeout(window.storage.get(key), 6000, null);
-    return res && res.value ? JSON.parse(res.value) : fallback;
-  } catch (e) { return fallback; }
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch (e) {
+    return fallback;
+  }
 }
 async function setKey(key, value) {
   try {
-    await window.storage.set(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value));
     return true;
   } catch (e) {
     console.error("Storage save failed:", e);
