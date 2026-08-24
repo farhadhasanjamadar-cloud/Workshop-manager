@@ -1775,7 +1775,33 @@ function AppInner() {
 setToast("DATABASE ERROR: " + (e?.message || String(e)));
 setTimeout(() => setToast(""), 15000);
   }
-
+    // Sync enquiry to Supabase
+    try {
+        await supabaseDbRequest("enquiries", {
+            method: "POST",
+            headers: {
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+                enquiry_date: enquiry.enquiryDate || todayISO(),
+                location: enquiry.location || null,
+                call_details: enquiry.callDetails || null,
+                customer_type: enquiry.customerType || null,
+                requirement: enquiry.requirement || null,
+                customer_budget: enquiry.customerBudget || null,
+                amount_quoted: enquiry.amountQuoted || null,
+                enquiry_status: enquiry.enquiryStatus || null,
+                enquiry_outcome: enquiry.enquiryOutcome || "pending",
+                next_followup_date: enquiry.nextFollowupDate || null,
+                next_action: enquiry.nextAction || null,
+                remarks: enquiry.remarks || null
+            })
+        });
+    } catch (e) {
+        console.error("Enquiry Supabase sync failed:", e);
+        setToast("DATABASE ERROR: " + (e?.message || "Could not sync enquiry"));
+        setTimeout(() => setToast(""), 15000);
+    }
   closeModal();
 }
   function createQuotationFromEnquiry(e) {
