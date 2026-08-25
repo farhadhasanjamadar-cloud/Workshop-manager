@@ -1665,24 +1665,48 @@ function AppInner() {
 
       // If already signed in to Supabase from a previous visit, skip the gate automatically.
       if (supabaseConfigured) {
-        try {
-          let session = await loadStoredSession();
-          if (session && session.expires_at && session.expires_at * 1000 < Date.now() + 60000) {
-            // expired, or expiring within a minute — refresh before trusting it
-            try {
-              session = await supabaseRefreshSession(session.refresh_token);
-              await saveStoredSession(session);
-            } catch (e) {
-              session = null;
-              await clearStoredSession();
-            }
-          }
-          if (session && session.user) {
-            const match = obj.staff.find((s) => s.email && s.email.trim().toLowerCase() === session.user.email.trim().toLowerCase());
-            setSessionUser(match || { name: session.user.email, role: "Staff", email: session.user.email });
-          }
-        } catch (e) { /* not signed in, or login service unreachable — gate will handle it */ }
+  try {
+    let session = await loadStoredSession();
+
+    if (
+      session &&
+      session.expires_at &&
+      session.expires_at * 1000 < Date.now() + 60000
+    ) {
+      try {
+        session = await supabaseRefreshSession(session.refresh_token);
+        await saveStoredSession(session);
+      } catch (e) {
+        session = null;
+        await clearStoredSession();
       }
+    }
+
+    if (session && session.user) {
+      const match = obj.staff.find(
+        (s) =>
+          s.email &&
+          s.email.trim().toLowerCase() ===
+            session.user.email.trim().toLowerCase()
+      );
+
+      setSessionUser(
+        match || {
+          name: session.user.email,
+          role: "Staff",
+          email: session.user.email,
+        }
+      );
+    }
+  } catch (e) {
+    // Not signed in or login service unavailable.
+  }
+}
+
+const wait = Math.max(0, 750 - (Date.now() - start));
+setTimeout(() => setLoading(false), wait);
+})();
+}, []);
        
 
     
