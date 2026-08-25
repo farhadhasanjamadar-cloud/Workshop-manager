@@ -1712,7 +1712,10 @@ setTimeout(() => setLoading(false), wait);
     
  
 
-  const showToast = (m) => { if (String(m).includes("Couldn't sync")) return; setToast(m);
+const showToast = (m) => {
+  if (String(m).includes("Couldn't sync")) return;
+  setToast(m);
+};
 
   async function handleSignOut() {
     if (supabaseConfigured) {
