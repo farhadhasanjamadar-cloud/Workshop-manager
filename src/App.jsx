@@ -1661,6 +1661,41 @@ function AppInner() {
       const obj = {};
       KEYS.forEach((k, i) => { obj[k] = entries[i]; });
       setData(obj);
+            // Load enquiries from Supabase
+      if (supabaseConfigured) {
+        try {
+          const storedSession = await loadStoredSession();
+
+          if (storedSession?.access_token) {
+            const remoteEnquiries = await supabaseDbRequest(
+              "enquiries?select=*&order=enquiry_date.desc"
+            );
+
+            if (Array.isArray(remoteEnquiries)) {
+              const mappedEnquiries = remoteEnquiries.map((r) => ({
+                id: r.id,
+                enquiryDate: r.enquiry_date || "",
+                location: r.location || "",
+                callDetails: r.call_details || "",
+                customerType: r.customer_type || "",
+                requirement: r.requirement || "",
+                customerBudget: r.customer_budget || "",
+                amountQuoted: r.amount_quoted || "",
+                enquiryStatus: r.enquiry_status || "",
+                enquiryOutcome: r.enquiry_outcome || "pending",
+                nextFollowupDate: r.next_followup_date || "",
+                nextAction: r.next_action || "",
+                remarks: r.remarks || "",
+              }));
+
+              obj.enquiries = mappedEnquiries;
+              setData({ ...obj });
+            }
+          }
+        } catch (e) {
+          console.error("Supabase enquiries load failed:", e);
+        }
+      }
       setGateRequired(true);
 
       // If already signed in to Supabase from a previous visit, skip the gate automatically.
