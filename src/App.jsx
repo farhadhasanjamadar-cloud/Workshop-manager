@@ -1683,9 +1683,9 @@ function AppInner() {
           }
         } catch (e) { /* not signed in, or login service unreachable — gate will handle it */ }
       }
-      }
+      
 
-      const wait = Math.max(0, 750 - (Date.now() - start));
+    
       const wait = Math.max(0, 750 - (Date.now() - start));
       setTimeout(() => setLoading(false), wait);
     })();
