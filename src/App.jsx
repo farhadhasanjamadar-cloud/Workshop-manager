@@ -1710,10 +1710,7 @@ setTimeout(() => setLoading(false), wait);
        
 
     
-      const wait = Math.max(0, 750 - (Date.now() - start));
-      setTimeout(() => setLoading(false), wait);
-    })();
-  }, []);
+ 
 
   const showToast = (m) => { if (String(m).includes("Couldn't sync")) return; setToast(m);
 
