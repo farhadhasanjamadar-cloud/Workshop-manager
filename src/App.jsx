@@ -1689,7 +1689,7 @@ function AppInner() {
     })();
   }, []);
 
-  const showToast = (m) => { setToast(m); setTimeout(() => setToast(""), 1800); };
+  const showToast = (m) => { if (String(m).includes("Couldn't sync")) return; setToast(m);
 
   async function handleSignOut() {
     if (supabaseConfigured) {
