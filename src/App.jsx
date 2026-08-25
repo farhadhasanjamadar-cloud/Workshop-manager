@@ -1685,42 +1685,6 @@ function AppInner() {
       }
       }
 
-      // Load enquiries from Supabase so they appear on every device
-      if (session?.access_token) {
-        try {
-          const remoteEnquiries = await supabaseDbRequest(
-            "enquiries?select=*"
-          );
-
-          if (Array.isArray(remoteEnquiries)) {
-            const enquiries = remoteEnquiries.map((r) => ({
-              id: r.id || crypto.randomUUID(),
-              enquiryDate: r.enquiry_date || "",
-              customerName: r.customer_name || r.name || "",
-              phone: r.phone || "",
-              location: r.location || "",
-              callDetails: r.call_details || "",
-              customerType: r.customer_type || "",
-              requirement: r.requirement || "",
-              customerBudget: r.customer_budget || "",
-              amountQuoted: r.amount_quoted || "",
-              enquiryStatus: r.enquiry_status || "",
-              enquiryOutcome: r.enquiry_outcome || "",
-              nextFollowupDate: r.next_followup_date || "",
-              nextAction: r.next_action || "",
-              remarks: r.remarks || "",
-            }));
-
-            setData((d) => ({
-              ...d,
-              enquiries,
-            }));
-          }
-        } catch (e) {
-          console.error("Enquiries load failed:", e);
-        }
-      }
-
       const wait = Math.max(0, 750 - (Date.now() - start));
       const wait = Math.max(0, 750 - (Date.now() - start));
       setTimeout(() => setLoading(false), wait);
