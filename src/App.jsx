@@ -1703,11 +1703,14 @@ function AppInner() {
   }
 
   const persist = useCallback((key, value) => {
-    setData((d) => ({ ...d, [key]: value }));
-    setKey(key, value).then((ok) => {
-      if (!ok) { setToast("⚠ Couldn't sync — check your connection, then reopen the app to confirm this saved."); setTimeout(() => setToast(""), 4000); }
-    });
-  }, []);
+  setData((d) => ({ ...d, [key]: value }));
+
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error("Local storage save failed:", e);
+  }
+}, []);
 
   function saveProfile(p) {
     setProfile(p);
