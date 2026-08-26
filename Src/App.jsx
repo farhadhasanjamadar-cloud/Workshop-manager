@@ -1853,10 +1853,87 @@ const showToast = (m) => {
     persist(key, next);
     showToast("Saved");
   }
-  function remove(key, id) {
-    persist(key, data[key].filter((r) => r.id !== id));
-    showToast("Deleted");
+  async function remove(key, id) {
+  try {
+    // Enquiries must be deleted from Supabase so all phones stay synchronized.
+    if (key === "enquiries" && supabaseConfigured) {
+      await supabaseDbRequest(
+        `enquiries?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Prefer": "return=minimal"
+          }
+        }
+      );
+    }
+
+    // Remove from this phone only after the cloud deletion succeeds.
+    setData((current) => ({
+      ...current,
+      [key]: (current[key] || []).filter((r) => r.id !== id)
+    }));
+
+    try {
+      const current = await getKey(key, []);
+      const next = (current || []).filter((r) => r.id !== id);
+      localStorage.setItem(key, JSON.stringify(next));
+    } catch (e) {
+      console.warn("Local cache update failed:", e);
+    }
+
+    showToast("Deleted & synced");
+  } catch (e) {
+    console.error("Delete failed:", e);
+    setToast("DELETE FAILED: " + (e?.message || "Could not delete from database"));
+    setTimeout(() => setToast(""), 15000);
   }
+}
+
+async function remove(key, id) {
+  try {
+    // Enquiries must be deleted from Supabase so all phones stay synchronized.
+    if (key === "enquiries" && supabaseConfigured) {
+      await supabaseDbRequest(
+        `enquiries?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Prefer": "return=minimal"
+          }
+        }
+      );
+    }
+
+    // Remove from this phone only after the cloud deletion succeeds.
+    setData((current) => ({
+      ...current,
+      [key]: (current[key] || []).filter((r) => r.id !== id)
+    }));
+
+    try {
+      const current = await getKey(key, []);
+      const next = (current || []).filter((r) => r.id !== id);
+      localStorage.setItem(key, JSON.stringify(next));
+    } catch (e) {
+      console.warn("Local cache update failed:", e);
+    }
+
+    showToast("Deleted & synced");
+  } catch (e) {
+    console.error("Delete failed:", e);
+    setToast("DELETE FAILED: " + (e?.message || "Could not delete from database"));
+    setTimeout(() => setToast(""), 15000);
+  }
+}
+
+async function doDelete() {
+  if (confirm) {
+    const currentConfirm = confirm;
+    setConfirm(null);
+    await remove(currentConfirm.key, currentConfirm.id);
+  }
+}
 
   function openAdd(type) { setModal({ type, data: null }); }
   function openEdit(type, record) { setModal({ type, data: record }); }
