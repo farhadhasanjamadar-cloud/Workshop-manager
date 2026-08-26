@@ -851,7 +851,7 @@ function BusinessDashboard({ jobs, finance, materials, staff, quotations }) {
 
 function Enquiries({ items, onAdd, onEdit, onDelete, onCreateQuotation }) {
   const [q, setQ] = useState("");
-  const filtered = items.filter((e) => (e.customerName + e.phone + e.location).toLowerCase().includes(q.toLowerCase()));
+  const filtered = items.filter((e) => e && (e.customerName + e.phone + e.location).toLowerCase().includes(q.toLowerCase()));
   const sorted = [...filtered].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   return (
     <>
