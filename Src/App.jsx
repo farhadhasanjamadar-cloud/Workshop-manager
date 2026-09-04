@@ -731,7 +731,7 @@ function FormPurchase({ data, materials, onSave, onCancel, isManager = false }) 
         <Field label="Quantity" required><Input type="number" value={v.quantity} onChange={set("quantity")} /></Field>
         {(!isManager || isNew) && <Field label="Total bill amount"><Input type="number" value={v.totalBill} onChange={set("totalBill")} /></Field>}
       </div>
-      {(!isManager || isNew) && <Field label="Amount paid"><Input type="number" value={v.amountPaid} onChange={set("amountPaid")} />}
+      {(!isManager || isNew) && <Field label="Amount paid"><Input type="number" value={v.amountPaid} onChange={set("amountPaid")} /></Field>}
       <Field label="Party / supplier" required><Input value={v.party} onChange={set("party")} /></Field>
       <Field label="Notes"><TextArea value={v.notes} onChange={set("notes")} /></Field>
       <label className="checkline">
